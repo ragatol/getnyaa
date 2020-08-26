@@ -1,0 +1,50 @@
+{
+    "user": "root",
+    "password": "leleafar",
+    "download_dir": "/mnt/hd/midia/torrents",
+    "library_dir": "/mnt/hd/midia/videos/Animes",
+    "date_fmt": "%a, %d %b %Y %X %z",
+    "period": 3600,
+    "sources": [
+        {
+            "user": "sff",
+            "animes":[
+                {
+                    "name": "Kanojo, Okarishimasu",
+                    "season": 1,
+                    "search_re": "Kanojo, Okarishimasu.*HEVC.*Multi",
+                    "episode_re": "- (\\d\\d)"
+                },
+                {
+                    "name": "Deca-Dence",
+                    "season": 1,
+                    "search_re": "Deca-Dence.*HEVC",
+                    "episode_re": "- (\\d\\d)"
+                },
+                {
+                    "name": "The God Of High School",
+                    "season": 1,
+                    "search_re": "The God Of High School.*HEVC.*Multi",
+                    "episode_re": "- (\\d\\d)"
+                },
+                {
+                    "name": "ReZero kara Hajimeru Isekai Seikatsu",
+                    "season": 2,
+                    "search_re": "Re.Zero kara Hajimeru Isekai Seikatsu.+HEVC.+Multi",
+                    "episode_re": "S2 - (\\d\\d)"
+                }
+            ]
+        },
+        {
+            "user": "Judas",
+            "animes":[
+                {
+                    "name": "Appare-Ranman!",
+                    "season": 1,
+                    "search_re": "Appare-Ranman!.*HEVC",
+                    "episode_re": "S01E(\\d\\d)"
+                }
+            ]
+        }
+    ]
+}
