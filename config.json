@@ -1,10 +1,8 @@
 {
-    "user": "root",
-    "password": "leleafar",
-    "download_dir": "/mnt/hd/midia/torrents",
-    "library_dir": "/mnt/hd/midia/videos/Animes",
-    "date_fmt": "%a, %d %b %Y %X %z",
-    "period": 3600,
+    "user": "transmission_user",
+    "password": "transmission_password",
+    "download_dir": "/path/to/torrent/download",
+    "library_dir": "/path/to/anime/library",
     "sources": [
         {
             "user": "sff",

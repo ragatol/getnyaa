@@ -7,6 +7,17 @@ Add it to cron or similar service to run automatically.
 
 Note that the script looks for config.json at the working directory,
 so change to the directory that contains the config.json file before
-running the script.
+running the script. For example, if using cron to call the script,
+do a simple shell script with the following lines:
+
+----
+#!/bin/sh
+cd /path/to/config
+/path/to/getnyaa.py
+----
+
+The "episode_re" regular expression must place inside the first
+capture group the match for the episode number at the title of
+the torrent. That's how the script knows what episode is.
 
 Requires transmission-daemon and transmission-remote, Python 3.5+
