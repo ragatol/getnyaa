@@ -1,0 +1,10 @@
+# Nyaa.si Auto Downloader
+
+A simple script to automate checking for new episodes of animes,
+adding them to transmission-daemon, and managing completed downloads.
+
+Add it to cron or similar service to run automatically.
+
+Note that the script looks for config.json at the working directory,
+so change to the directory that contains the config.json file before
+running the script.
