@@ -9,7 +9,7 @@
 # anime library once completed. Does the cleanup of finished
 # torrents too.
 #
-# (c) 2020 Rafael Fernandes - BSD/MIT Licence
+# 2020 Rafael Fernandes - Public Domain
 #
 
 import xml.etree.ElementTree as XML
