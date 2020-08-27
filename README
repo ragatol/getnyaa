@@ -8,3 +8,5 @@ Add it to cron or similar service to run automatically.
 Note that the script looks for config.json at the working directory,
 so change to the directory that contains the config.json file before
 running the script.
+
+Requires transmission-daemon and transmission-remote, Python 3.5+
