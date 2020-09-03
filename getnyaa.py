@@ -13,7 +13,6 @@
 #
 
 import xml.etree.ElementTree as XML
-import http.client
 import json
 import subprocess
 import re
@@ -50,13 +49,6 @@ def getOrganizeFilename(torrent_hash):
 # Check for missing episodes from Nyaa.si RSS feeds
 # and add them to transmission
 #
-
-def getUserRSS(user):
-    req = f"/?page=rss&user={user}"
-    con = http.client.HTTPSConnection("nyaa.si")
-    con.request("GET",req)
-    resp = con.getresponse()
-    return resp.read()
 
 def addEpisodeTorrent(url):
     runTransmission(['-a',url])
@@ -103,9 +95,11 @@ def isWantedEpisode(title, url, thash, anime_list):
         return # go to next item in RSS
 
 def findEpisodes(user,anime_list):
+    from urllib.request import urlopen
     ns = { "nyaa" : "https://nyaa.si/xmlns/nyaa" } 
     try:
-        src_rss = XML.fromstring(getUserRSS(user))
+        rss = urlopen(f"https://nyaa.si/?page=rss&user={user}")
+        src_rss = XML.fromstring(rss.read())
     except:
         print("Could not load",user,"RSS!")
         return
