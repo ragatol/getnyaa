@@ -16,7 +16,6 @@ import xml.etree.ElementTree as XML
 import json
 import subprocess
 import re
-import os
 from pathlib import Path
 
 #
