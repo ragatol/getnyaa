@@ -125,7 +125,11 @@ For example, the following anime configuration:
 ~~~json
 {
   "name": "Attack on Titan",
+<<<<<<< HEAD
   "search_re": "Shingeki no Kyojin.*Ep..(\\d+)"`
+=======
+  "search_re": "Shingeki no Kyojin.*Ep..(\\d+)"
+>>>>>>> d705762 (New version:)
 }
 ~~~
 
