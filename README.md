@@ -77,7 +77,7 @@ See the included "config.json" as an example.
 A simple way to create a __epsiode_re__ expression is to visit the torrent
 description, copying the torrent title, and doing the following edits:
 
-- Delete tags like `[HEVC]`, and anything thad doens't contribute to identify
+- Delete tags like `[HEVC]`, and anything thad doesn't contribute to identify
   the particular anime episode.
 - If there's both overall and seasonal episode numbers, delete one of them.
   Leave the text right before the episode number so it can be used to identify
@@ -172,7 +172,7 @@ optionally, __season_end__. For example, with the following configuration:
 "name": "Attack on Titan",
 "search_re": "Shingeki no Kyokin.*Ep..(\\d+)",
 "season": 2,
-"season_start": 26`
+"season_start": 26
 ~~~
 
 The script will only check for episodes starting episode 26, and will convert
