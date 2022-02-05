@@ -83,23 +83,23 @@ def check_episode(title, url, thash, anime_list):
         print(f'Found match for {title}')
         try:
             episode = int(match.group(1))
-            season_start = anime.get("season_start")
-            if season_start is not None:
-                # convert episode numbering
-                if "season" in anime:
-                    # from overall to seasonal numbering
-                    episode = episode - season_start + 1
-                    if episode <= 0:
-                        return # this episode is from previous season, ignore
-                    season_end = anime.get("season_end")
-                    if (season_end is not None) and (episode > season_end):
-                        return # this episode is from next season, ignore
-                else:
-                    # from seasonal to overall
-                    episode = episode - 1 + season_start
         except:
             print("Could not find episode number from torrent title, check 'search_re' on config.json")
             return
+        season_start = anime.get("season_start")
+        if season_start is not None:
+            # convert episode numbering
+            if "season" in anime:
+                # from overall to seasonal numbering
+                episode = episode - season_start + 1
+                if episode <= 0:
+                    return  # this episode is from previous season, ignore
+                season_end = anime.get("season_end")
+                if (season_end is not None) and (episode > season_end):
+                    return  # this episode is from next season, ignore
+            else:
+                # from seasonal to overall
+                episode = episode - 1 + season_start
         episode_path = make_episode_path(anime["name"], episode, anime.get("season"))
         print("Checking if", episode_path.name, "is missing...")
         if (not has_episode(episode_path)):
