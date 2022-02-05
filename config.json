@@ -1,48 +1,32 @@
 {
-    "user": "transmission_user",
-    "password": "transmission_password",
-    "download_dir": "/path/to/torrent/download",
-    "library_dir": "/path/to/anime/library",
-    "sources": [
-        {
-            "user": "sff",
-            "animes":[
-                {
-                    "name": "Kanojo, Okarishimasu",
-                    "season": 1,
-                    "search_re": "Kanojo, Okarishimasu.*HEVC.*Multi",
-                    "episode_re": "- (\\d\\d)"
-                },
-                {
-                    "name": "Deca-Dence",
-                    "season": 1,
-                    "search_re": "Deca-Dence.*HEVC",
-                    "episode_re": "- (\\d\\d)"
-                },
-                {
-                    "name": "The God Of High School",
-                    "season": 1,
-                    "search_re": "The God Of High School.*HEVC.*Multi",
-                    "episode_re": "- (\\d\\d)"
-                },
-                {
-                    "name": "ReZero kara Hajimeru Isekai Seikatsu",
-                    "season": 2,
-                    "search_re": "Re.Zero kara Hajimeru Isekai Seikatsu.+HEVC.+Multi",
-                    "episode_re": "S2 - (\\d\\d)"
-                }
-            ]
-        },
-        {
-            "user": "Judas",
-            "animes":[
-                {
-                    "name": "Appare-Ranman!",
-                    "season": 1,
-                    "search_re": "Appare-Ranman!.*HEVC",
-                    "episode_re": "S01E(\\d\\d)"
-                }
-            ]
-        }
-    ]
+	"user": "transmission_user",
+	"password": "transmission_password",
+	"download_dir": "/path/to/torrent/download",
+	"library_dir": "/path/to/anime/library",
+	"sources": [
+		{
+			"user": "sff",
+			"animes": [
+				{
+					"name": "Kanojo, Okarishimasu",
+					"season": 1,
+					"search_re": "Kanojo, Okarishimasu.*S01E(\\d+)"
+				},
+				{
+					"name": "Deca-Dence",
+					"search_re": "Deca-Dence - (\\d+)"
+				}
+			]
+		},
+		{
+			"user": "Judas",
+			"animes": [
+				{
+					"name": "Appare-Ranman!",
+					"search_re": "Appare-Ranman!.*S01E(\\d+)",
+					"season_start": 1
+				}
+			]
+		}
+	]
 }
