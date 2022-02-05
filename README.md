@@ -4,7 +4,8 @@ A simple script to automate checking for new episodes of animes from your
 preferred uploaders at nyaa.si, adding them to transmission-daemon, and
 managing completed downloads.
 
-Requires transmission-daemon and transmission-remote, Python 3.5+
+Requires transmission-daemon and transmission-remote, Python 3.5+, and some
+understanding of json and regular expressions.
 
 Add it to your crontab or similar service to run automatically.
 
@@ -52,6 +53,9 @@ The config.json is structured like this:
   episode already exists, and to copy new episodes.
 - sources: list of uploaders from nyaa.si;
 
+The script needs to be able to write to both __download_dir__ and
+__library_dir__.
+
 "sources" is a list of objects with the following keys:
 
 - user: username of the uploader, the last part of the user url, e.g.: if the
@@ -83,9 +87,11 @@ description, copying the torrent title, and doing the following edits:
   Leave the text right before the episode number so it can be used to identify
   where the episode number is.
 - Replace other text between the anime name and the episode number with `.*`.
-- Replace the episode number with (\\d+). If you are interested on the overral
-  episode number, change the "Ep. 33" with "Ep. (\\d+)". If you are interested
-  in seasonal episode number, change the "S02E01" with "S02E(\\d+)".
+- Replace the episode number with (\\\\d+). If you are interested on the
+  overral episode number, change the "Ep. 33" with "Ep. (\\\\d+)". If you are
+  interested in seasonal episode number, change the "S02E01" with
+  "S02E(\\\\d+)". Note that the `\d` regular expression uses `\`, which needs to
+  be escaped in a json string, using `\\d`.
 
 Example:
 
@@ -155,9 +161,11 @@ If you prefer organized like some media servers do (e.g. Jellyfin), separated
 by seasons, use the __season__ key when configuring an anime like this:
 
 ~~~json
-"name": "Attack on Titan",
-"search_re": "Shinkegi no Kyojin.*S04E(\\d+)",
-"season": 4
+{
+  "name": "Attack on Titan",
+  "search_re": "Shinkegi no Kyojin.*S04E(\\d+)",
+  "season": 4
+}
 ~~~
 
 Then, the script will check for and add new episodes like this:
@@ -169,10 +177,12 @@ convert overall numbering to seasonal numbering using __season_start__ and,
 optionally, __season_end__. For example, with the following configuration:
 
 ~~~json
-"name": "Attack on Titan",
-"search_re": "Shingeki no Kyokin.*Ep..(\\d+)",
-"season": 2,
-"season_start": 26
+{
+  "name": "Attack on Titan",
+  "search_re": "Shingeki no Kyokin.*Ep..(\\d+)",
+  "season": 2,
+  "season_start": 26
+}
 ~~~
 
 The script will only check for episodes starting episode 26, and will convert
