@@ -122,8 +122,12 @@ don't use the __season__ key when configuring an anime.
 
 For example, the following anime configuration:
 
-`"name": "Attack on Titan",
-"search_re": "Shingeki no Kyojin.*Ep..(\\d+)"`
+~~~json
+{
+  "name": "Attack on Titan",
+  "search_re": "Shingeki no Kyojin.*Ep..(\\d+)"`
+}
+~~~
 
 Will check for and copy new episodes like this:
 
