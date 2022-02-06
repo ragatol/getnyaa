@@ -76,7 +76,7 @@ __library_dir__.
 
 See the included "config.json" as an example.
 
-## Writing a __epsiode_re__ expression ##
+## Writing an __epsiode_re__ expression ##
 
 A simple way to create a __epsiode_re__ expression is to visit the torrent
 description, copying the torrent title, and doing the following edits:
