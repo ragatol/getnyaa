@@ -12,7 +12,7 @@
 # 2020-2022 Rafael Fernandes - Public Domain
 #
 
-import xml.etree.ElementTree as XML
+from xml.etree import ElementTree as XML
 import json
 import subprocess
 import re
@@ -25,10 +25,14 @@ from pathlib import Path
 print("Starting getnyaa:")
 
 global CONFIG
+global TRANSMISSION_LOGIN
+global LIBRARY_DIR
+global POST_COPY
 with open("config.json") as f:
     CONFIG = json.load(f)
     TRANSMISSION_LOGIN = f'{CONFIG["user"]}:{CONFIG["password"]}'
     LIBRARY_DIR = CONFIG["library_dir"]
+    POST_COPY = CONFIG.get("post_copy",None)
 
 
 def make_episode_path(anime_name, episode, season=None):
@@ -79,7 +83,7 @@ def check_episode(title, url, thash, anime_list):
     for anime in anime_list:
         match = re.search(anime["search_re"], title)
         if not match:
-            continue  # test next anime in anime_list
+            continue # test next anime in anime_list
         print(f'Found match for {title}')
         try:
             episode = int(match.group(1))
@@ -93,10 +97,10 @@ def check_episode(title, url, thash, anime_list):
                 # from overall to seasonal numbering
                 episode = episode - season_start + 1
                 if episode <= 0:
-                    return  # this episode is from previous season, ignore
+                    return # this episode is from previous season, ignore
                 season_end = anime.get("season_end")
                 if (season_end is not None) and (episode > season_end):
-                    return  # this episode is from next season, ignore
+                    return # this episode is from next season, ignore
             else:
                 # from seasonal to overall
                 episode = episode - 1 + season_start
@@ -108,7 +112,7 @@ def check_episode(title, url, thash, anime_list):
             add_organize_file(thash, episode_path)
         else:
             print(episode_path.name, "already in library, skipping.")
-        return  # go to next item in RSS
+        return # go to next item in RSS
 
 
 def check_rss_episodes(user, anime_list):
@@ -180,6 +184,11 @@ def copy_to_library(thash, dst_path):
     print("Copying new episode", src_file, "to", dst_file, "...")
     dst_file.parent.mkdir(parents=True, exist_ok=True)
     copyfile(src_file, dst_file)
+    if POST_COPY != None:
+        post_args = [POST_COPY,str(dst_file)]
+        r = subprocess.run(post_args)
+        if r.returncode != 0:
+            print("Error running post-copy command: ", post_args)
 
 
 def clean_torrent(thash, path):

@@ -51,6 +51,7 @@ The config.json is structured like this:
 - download_dir: path where transmision-daemon saves completed torrents;
 - library_dir: path to where your library is. It'll be used to check if a
   episode already exists, and to copy new episodes.
+- post_copy: command to call for the file after it's copied to the library;
 - sources: list of uploaders from nyaa.si;
 
 The script needs to be able to write to both __download_dir__ and
