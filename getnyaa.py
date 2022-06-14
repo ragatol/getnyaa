@@ -81,7 +81,7 @@ def add_organize_file(thash, destination):
 
 def check_episode(title, url, thash, anime_list):
     for anime in anime_list:
-        match = re.search(anime["search_re"], title)
+        match = re.search(anime["search_re"], title, re.IGNORECASE)
         if not match:
             continue # test next anime in anime_list
         print(f'Found match for {title}')
