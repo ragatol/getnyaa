@@ -18,21 +18,21 @@ import subprocess
 import re
 from pathlib import Path
 
+
 #
 # Config file and utilities
 #
 
-print("Starting getnyaa:")
 
 global CONFIG
 global TRANSMISSION_LOGIN
 global LIBRARY_DIR
-global POST_COPY
+global COPY_CMD
 with open("config.json") as f:
     CONFIG = json.load(f)
     TRANSMISSION_LOGIN = f'{CONFIG["user"]}:{CONFIG["password"]}'
     LIBRARY_DIR = CONFIG["library_dir"]
-    POST_COPY = CONFIG.get("post_copy",None)
+    COPY_CMD = CONFIG.get("copy_cmd","cp")
 
 
 def make_episode_path(anime_name, episode, season=None):
@@ -54,16 +54,15 @@ def has_episode(episode_path):
 
 def transmission_cmd(args, capture=False):
     targs = ['transmission-remote', '-n', TRANSMISSION_LOGIN] + args
-    return subprocess.run(targs, capture_output=capture, text=True)
+    return subprocess.run(targs, capture_output=True, text=True)
 
 
 def get_organize_filename(torrent_hash):
     return f'{CONFIG["download_dir"]}/{torrent_hash}.getnyaa'
 
-#
-# Check for missing episodes from Nyaa.si RSS feeds
-# and add them to transmission
-#
+
+# Functions for checking for new episodes in a Nyaa.si RSS
+# and adding them to transmission
 
 
 def add_torrent(url):
@@ -137,12 +136,8 @@ def search_new_episodes(src_list):
         check_rss_episodes(src["user"], src["animes"])
 
 
-print("Searching for new episodes:")
-search_new_episodes(CONFIG["sources"])
-
-#
-# Check if download finished, and copy to destination anime folder
-#
+# Functions for checking download progress and
+# organizing downloaded episodes
 
 
 def is_torrent_removed(thash):
@@ -176,19 +171,16 @@ def get_download_filename(thash):
 
 
 def copy_to_library(thash, dst_path):
-    from shutil import copyfile
     src_file = Path(CONFIG["download_dir"]) / get_download_filename(thash)
     dst_file = Path(str(dst_path) + src_file.suffix)
     if (dst_file.exists()):
         return  # dont overwrite existing file
     print("Copying new episode", src_file, "to", dst_file, "...")
     dst_file.parent.mkdir(parents=True, exist_ok=True)
-    copyfile(src_file, dst_file)
-    if POST_COPY != None:
-        post_args = [POST_COPY,str(dst_file)]
-        r = subprocess.run(post_args)
-        if r.returncode != 0:
-            print("Error running post-copy command: ", post_args)
+    copy_cmd_args = [COPY_CMD,str(src_file),str(dst_file)]
+    r = subprocess.run(copy_cmd_args)
+    if r.returncode != 0:
+        print("Error while copying: ", copy_cmd_args)
 
 
 def clean_torrent(thash, path):
@@ -212,5 +204,15 @@ def check_downloads():
             f.unlink()
 
 
-print("\nChecking downloads:")
-check_downloads()
+if __name__ == "__main__":
+    # Allow only 1 instance running...
+    lockfile = Path("/tmp/getnyaa")
+    if lockfile.exists():
+        quit(0)
+    lockfile.touch()
+    print("Searching for new episodes:")
+    search_new_episodes(CONFIG["sources"])
+    print("\nChecking downloads:")
+    check_downloads()
+    lockfile.unlink()
+
