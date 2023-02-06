@@ -14,7 +14,7 @@ change to the directory that contains the config.json file before running the
 script. For example, if using cron to call the script, do a simple shell script
 with the following lines:
 
-~~~shell
+~~~sh
 #!/bin/sh
 cd /path/to/config
 /path/to/getnyaa.py
@@ -23,7 +23,7 @@ cd /path/to/config
 If your config is in the same directory as the getnyaa script, then just add
 this as your command in your crontab:
 
-~~~shell
+~~~sh
 cd /path/to/getnyaa_dir && ./getnyaa.py
 ~~~
 
@@ -31,7 +31,7 @@ The script prints to stdout what it is doing for each entry in the RSS that
 matches the search rules defined in config.json. To log to a file instead, just
 redirect. For example, the previous script could be rewritten to:
 
-~~~shell
+~~~sh
 #!/bin/sh
 cd /path/to/config
 /path/to/getnyaa.py > /var/log/getnyaa.log
@@ -51,7 +51,7 @@ The config.json is structured like this:
 - download_dir: path where transmision-daemon saves completed torrents;
 - library_dir: path to where your library is. It'll be used to check if a
   episode already exists, and to copy new episodes.
-- post_copy: command to call for the file after it's copied to the library;
+- copy_cmd: command to use to copy the new episode to your library. Defaults to 'cp'.
 - sources: list of uploaders from nyaa.si;
 
 The script needs to be able to write to both __download_dir__ and
@@ -197,3 +197,11 @@ If you add __season_end__:
 
 Then the script will ignore episodes 38 and forward, as they are not of this
 particular season.
+
+### USING COPY_CMD FOR PROCESSING
+
+By default, the script uses 'cp' to copy the new episode to your library.
+You can use other command that takes the source path and the destination path
+to process the video when adding it to your library, e.g.: using ffmpeg to
+burn subtitles.
+
