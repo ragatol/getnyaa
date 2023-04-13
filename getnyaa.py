@@ -12,11 +12,11 @@
 # 2020-2022 Rafael Fernandes - Public Domain
 #
 
-from xml.etree import ElementTree as XML
 import json
-import subprocess
 import re
+import subprocess
 from pathlib import Path
+from xml.etree import ElementTree as XML
 
 
 #
@@ -32,7 +32,7 @@ with open("config.json") as f:
     CONFIG = json.load(f)
     TRANSMISSION_LOGIN = f'{CONFIG["user"]}:{CONFIG["password"]}'
     LIBRARY_DIR = CONFIG["library_dir"]
-    COPY_CMD = CONFIG.get("copy_cmd","cp")
+    COPY_CMD = CONFIG.get("copy_cmd", "cp")
 
 
 def make_episode_path(anime_name, episode, season=None):
@@ -72,17 +72,16 @@ def add_torrent(url):
 def add_organize_file(thash, destination):
     org_filename = get_organize_filename(thash)
     print("Adding organize file", org_filename)
-    with Path(org_filename) as p:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        print(str(destination))
-        p.write_text(str(destination))
+    p = Path(org_filename)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(str(destination))
 
 
 def check_episode(title, url, thash, anime_list):
     for anime in anime_list:
         match = re.search(anime["search_re"], title, re.IGNORECASE)
         if not match:
-            continue # test next anime in anime_list
+            continue  # test next anime in anime_list
         print(f'Found match for {title}')
         try:
             episode = int(match.group(1))
@@ -96,10 +95,10 @@ def check_episode(title, url, thash, anime_list):
                 # from overall to seasonal numbering
                 episode = episode - season_start + 1
                 if episode <= 0:
-                    return # this episode is from previous season, ignore
+                    return  # this episode is from previous season, ignore
                 season_end = anime.get("season_end")
                 if (season_end is not None) and (episode > season_end):
-                    return # this episode is from next season, ignore
+                    return  # this episode is from next season, ignore
             else:
                 # from seasonal to overall
                 episode = episode - 1 + season_start
@@ -111,7 +110,7 @@ def check_episode(title, url, thash, anime_list):
             add_organize_file(thash, episode_path)
         else:
             print(episode_path.name, "already in library, skipping.")
-        return # go to next item in RSS
+        return  # go to next item in RSS
 
 
 def check_rss_episodes(user, anime_list):
@@ -149,11 +148,11 @@ def get_download_status(thash):
     r = transmission_cmd(['-t', thash, '-i'], capture=True)
     downloaded = False
     finished = False
-    for l in r.stdout.splitlines():
-        match = re.search(r'State: (\w+)', l)
+    for line in r.stdout.splitlines():
+        match = re.search(r'State: (\w+)', line)
         if (match and match.group(1) == "Finished"):
             finished = True
-        match = re.search('Percent Done: (.*)%', l)
+        match = re.search('Percent Done: (.*)%', line)
         if (match and match.group(1) == "100"):
             downloaded = True
     return (downloaded, finished)
@@ -177,7 +176,7 @@ def copy_to_library(thash, dst_path):
         return  # dont overwrite existing file
     print("Copying new episode", src_file, "to", dst_file, "...")
     dst_file.parent.mkdir(parents=True, exist_ok=True)
-    copy_cmd_args = [COPY_CMD,str(src_file),str(dst_file)]
+    copy_cmd_args = [COPY_CMD, str(src_file), str(dst_file)]
     r = subprocess.run(copy_cmd_args)
     if r.returncode != 0:
         print("Error while copying: ", copy_cmd_args)
@@ -205,7 +204,7 @@ def check_downloads():
 
 
 if __name__ == "__main__":
-    # Allow only 1 instance running...
+    # Allow only 1 instance running
     lockfile = Path("/tmp/getnyaa")
     if lockfile.exists():
         quit(0)
@@ -215,4 +214,3 @@ if __name__ == "__main__":
     print("\nChecking downloads:")
     check_downloads()
     lockfile.unlink()
-
