@@ -37,14 +37,6 @@ with open("config.json") as f:
     COPY_CMD = CONFIG.get("copy_cmd", "cp")
 
 
-def make_episode_path(anime_name, episode, season=None):
-    if season is None:
-        ep_filename = f'{anime_name} - {episode:02}'
-    else:
-        ep_filename = f'Season {season:02}/{anime_name} - S{season:02}E{episode:02}'
-    return Path(f'{LIBRARY_DIR}/{anime_name}/{ep_filename}')
-
-
 def has_episode(episode_path):
     anime_path = episode_path.parent
     if (not anime_path.exists()):
@@ -79,6 +71,44 @@ def add_organize_file(thash, destination):
     p.write_text(str(destination))
 
 
+def overall_episode_str(name, episode, start_offset=None):
+    if start_offset is not None:
+        episode = episode - 1 + start_offset
+    return f"{name} - {episode:02}"
+
+
+def seasonal_episode_str(name, episode, season, cour=None, start=None, end=None):
+    if cour is not None and start is not None:
+        # can't have both cour and seasonal conversion
+        print("Both season_continue and season_start are set, this is an error.")
+        return None
+    if cour is not None:
+        # continue season from cour (season_continue) episode
+        episode = episode - 1 + cour
+    if start is not None:
+        # convert overral numbering to seasonal numbering
+        episode = episode - start + 1
+        if (episode <= 0) or ((end is not None) and (episode > end)):
+            # episode is not of this season
+            print(f"Episode not of this season: {season:02}.")
+            return None
+    return f"Season {season:02}/{name} - S{season:02}E{episode:02}"
+
+
+def make_episode_filename(anime, episode):
+    name = anime["name"]
+    season = anime.get("season", 0)
+    cour = anime.get("season_continue")
+    start = anime.get("season_start")
+    end = anime.get("season_end")
+    if season == 0:
+        # use overall numbering of episodes
+        return overall_episode_str(name, episode, start)
+    else:
+        # use seasonal numbering of episodes
+        return seasonal_episode_str(name, episode, season, cour, start, end)
+
+
 def check_episode(title, url, thash, anime_list):
     for anime in anime_list:
         match = re.search(anime["search_re"], title, re.IGNORECASE)
@@ -90,21 +120,11 @@ def check_episode(title, url, thash, anime_list):
         except:
             print("Could not find episode number from torrent title, check 'search_re' on config.json")
             return
-        season_start = anime.get("season_start")
-        if season_start is not None:
-            # convert episode numbering
-            if "season" in anime:
-                # from overall to seasonal numbering
-                episode = episode - season_start + 1
-                if episode <= 0:
-                    return  # this episode is from previous season, ignore
-                season_end = anime.get("season_end")
-                if (season_end is not None) and (episode > season_end):
-                    return  # this episode is from next season, ignore
-            else:
-                # from seasonal to overall
-                episode = episode - 1 + season_start
-        episode_path = make_episode_path(anime["name"], episode, anime.get("season"))
+        anime_name = anime["name"]
+        ep_filename = make_episode_filename(anime, episode)
+        if ep_filename is None:
+            continue
+        episode_path = Path(f'{LIBRARY_DIR}/{anime_name}/{ep_filename}')
         print("Checking if", episode_path.name, "is missing...")
         if (not has_episode(episode_path)):
             print(episode_path.name, "missing, adding torrent to transmission.")

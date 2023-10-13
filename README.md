@@ -198,6 +198,25 @@ If you add __season_end__:
 Then the script will ignore episodes 38 and forward, as they are not of this
 particular season.
 
+#### Multi-part seasons (cours) ####
+
+If a new cour of a season starts, and the uploader restarts the episode number
+from 1, you can use __season_continue__ to append the new cour episodes to the
+season.
+
+~~~json
+{
+    "name": "Mahou Tsukai no Yome",
+    "search_re": "Mahou Tsukai no Yome Season 2 Cour 2 - (\\d+)",
+    "season": 2,
+    "season_continue": 13
+}
+~~~
+
+This will convert the "Mahou Tsukai no Yome Season 2 Cour 2 - 01" used by the
+uploader, to "Mahou Tsukai no Yome/Season 02/Mahou Tsukai no Yome - S02E13" in
+your library.
+
 ### USING COPY_CMD FOR PROCESSING
 
 By default, the script uses 'cp' to copy the new episode to your library.
